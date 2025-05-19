@@ -1,24 +1,23 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>TOI News Fetcher</title>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css">
-</head>
-<body class="bg-gray-100 p-10">
-  <div class="max-w-2xl mx-auto bg-white shadow-md p-8 rounded-lg text-center">
-    <h1 class="text-2xl font-bold mb-4">TOI RSS News Fetcher</h1>
-    <button id="fetchBtn" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Fetch Latest News</button>
-    <p id="status" class="mt-4 text-gray-700"></p>
-  </div>
+<!-- Add below the <p id="status"> -->
+<div id="newsList" class="mt-6 text-left"></div>
 
-  <script>
-    document.getElementById('fetchBtn').onclick = async () => {
-      document.getElementById('status').innerText = "Fetching news...";
-      const res = await fetch("/fetch-news");
-      const data = await res.json();
-      document.getElementById('status').innerText = data.message;
-    }
-  </script>
-</body>
-</html>
+<script>
+  document.getElementById('fetchBtn').onclick = async () => {
+    document.getElementById('status').innerText = "Fetching news...";
+    const res = await fetch("/fetch-news");
+    const data = await res.json();
+    document.getElementById('status').innerText = data.message;
+
+    const newsRes = await fetch("/get-news");
+    const news = await newsRes.json();
+
+    const newsList = document.getElementById("newsList");
+    newsList.innerHTML = news.map(item => `
+      <div class="mb-4 p-4 bg-gray-50 rounded">
+        <a href="${item.link}" class="text-blue-600 font-bold" target="_blank">${item.title}</a>
+        <p class="text-sm text-gray-600">${item.pubDate}</p>
+        <p>${item.description}</p>
+      </div>
+    `).join('');
+  };
+</script>
