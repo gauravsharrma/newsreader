@@ -4,10 +4,7 @@
   <meta charset="UTF-8" />
   <title>TOI RSS News Fetcher</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <!-- Optional Favicon -->
   <link rel="icon" href="/static/favicon.ico" type="image/x-icon" />
-
-  <!-- Tailwind CSS -->
   <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 </head>
 <body class="bg-gray-100 p-10">
@@ -31,6 +28,8 @@
 
       fetchBtn.onclick = async () => {
         status.innerText = "Fetching news...";
+        newsList.innerHTML = "";  // Clear previous records
+
         try {
           const res = await fetch("/fetch-news");
           const data = await res.json();
