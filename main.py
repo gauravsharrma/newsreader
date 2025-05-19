@@ -55,9 +55,17 @@ def get_news():
 
 def extract_article_content(url):
     try:
-        response = requests.get(url, timeout=10)
+        # Use public proxy to bypass CORS and JS rendering
+        proxy_url = "https://api.codetabs.com/v1/proxy/?quest=" + url
+        response = requests.get(proxy_url, timeout=10)
         soup = BeautifulSoup(response.content, "html.parser")
-        div = soup.find("div", class_="_s30J clearfix  ")
-        return div.get_text(separator="\n", strip=True) if div else "[Content not found]"
+
+        main_div = soup.select_one("div._s30J.clearfix")
+        if main_div:
+            for img in main_div.find_all("img"):
+                img.decompose()
+            return main_div.get_text(separator="\n", strip=True)
+        else:
+            return "[Content not found]"
     except Exception as e:
         return f"[Error fetching content: {e}]"
