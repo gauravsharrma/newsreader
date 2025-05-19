@@ -30,8 +30,6 @@ def fetch_news():
         link = item.findtext("link")
         description = item.findtext("description")
         pubDate = item.findtext("pubDate")
-
-        # Extract full article content
         content = extract_article_content(link)
 
         items.append({
@@ -55,12 +53,11 @@ def get_news():
     else:
         return {"message": "No news found. Please click Fetch Latest News."}
 
-
 def extract_article_content(url):
     try:
         response = requests.get(url, timeout=10)
         soup = BeautifulSoup(response.content, "html.parser")
         div = soup.find("div", class_="_s30J clearfix  ")
-        return div.get_text(strip=True) if div else "[Content not found]"
+        return div.get_text(separator="\n", strip=True) if div else "[Content not found]"
     except Exception as e:
-        return f"[Error fetching article content: {e}]"
+        return f"[Error fetching content: {e}]"
